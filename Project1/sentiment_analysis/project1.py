@@ -133,20 +133,16 @@ def perceptron(feature_matrix, labels, T):
     the feature matrix.
     """
     # Your code here
-    x = feature_matrix
-    y = labels
-    feature_matrix_size = x.shape
-    theta = np.zeros(feature_matrix_size[1])
+    (nsamples, nfeatures) = feature_matrix.shape
+    theta = np.zeros(nfeatures)
     theta_0 = 0.0
     for t in range(T):
-        for i in get_order(feature_matrix.shape[0]):
-            # Your code here
-            perceptron_single_step_update_results = perceptron_single_step_update(x[i], y[i], theta, theta_0)
-            theta = perceptron_single_step_update_results[0]
-            theta_0 = perceptron_single_step_update_results[1]
-    return(theta, theta_0)
+        for i in get_order(nsamples):
+            theta, theta_0 = perceptron_single_step_update(
+                feature_matrix[i], labels[i], theta, theta_0)
+    return (theta, theta_0)
     
-#pragma: coderesponse end
+
 
 
 #pragma: coderesponse template
@@ -180,60 +176,19 @@ def average_perceptron(feature_matrix, labels, T):
     find a sum and divide.
     """
     # Your code here
-#    (nsamples, nfeatures) = feature_matrix.shape
-#    theta = np.zeros(nfeatures)
-#    theta_sum = np.zeros(nfeatures)
-#    theta_0 = 0.0
-#    theta_0_sum = 0.0
-#    for t in range(T):
-#        for i in range(nsamples):
-#            theta, theta_0 = perceptron_single_step_update(feature_matrix[i],labels[i], theta, theta_0)
-#            theta_sum += theta
-#            theta_0_sum += theta_0
-#    return (theta_sum/(nsamples*T), theta_0_sum/(nsamples*T))
 
-
-#    x = feature_matrix
-#    y = labels
-#    feature_matrix_size = x.shape
-#    data_point_count = feature_matrix_size[0]
-#    theta = np.zeros(feature_matrix_size[1])
-#    theta_0 = 0.0
-#    total_theta = theta
-#    total_theta_0 = theta_0
-#    c = 0
-#    for iteration in range(T):
-#        for i in range(data_point_count):
-#            perceptron_single_step_update_results = perceptron_single_step_update(x[i], y[i], theta, theta_0)
-#            theta = perceptron_single_step_update_results[0]
-#            theta_0 = perceptron_single_step_update_results[1]
-#            total_theta = np.add(total_theta, theta)
-#            total_theta_0 = np.add(total_theta_0, theta_0)
-#            c += 1
-#    return (total_theta / c, total_theta_0 / c)
-
-
-    x = feature_matrix
-    y = labels
-    feature_matrix_size = x.shape
-    data_point_count = feature_matrix_size[0]
-    theta = np.zeros(feature_matrix_size[1])
+    (nsamples, nfeatures) = feature_matrix.shape
+    theta = np.zeros(nfeatures)
+    theta_sum = np.zeros(nfeatures)
     theta_0 = 0.0
-    total_theta = theta
-    total_theta_0 = theta_0
-    c = 0
-    for iteration in range(T):
-        for i in get_order(data_point_count):
-            perceptron_single_step_update_results = perceptron_single_step_update(x[i], y[i], theta, theta_0)
-            theta = perceptron_single_step_update_results[0]
-            theta_0 = perceptron_single_step_update_results[1]
-            total_theta = total_theta + theta
-            total_theta_0 = total_theta_0 + theta_0
-            c += 1
-    return (total_theta / c, total_theta_0 / c)
-
-
-#pragma: coderesponse end
+    theta_0_sum = 0.0
+    for t in range(T):
+        for i in get_order(nsamples):
+            theta, theta_0 = perceptron_single_step_update(
+                feature_matrix[i], labels[i], theta, theta_0)
+            theta_sum += theta
+            theta_0_sum += theta_0
+    return (theta_sum / (nsamples * T), theta_0_sum / (nsamples * T))
 
 
 #pragma: coderesponse template
