@@ -16,31 +16,39 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
         np.ndarray: (n, K) array holding the soft counts
             for all components for all examples
         float: log-likelihood of the assignment
-    """
-#    raise NotImplementedError
-    n,d = np.shape(X) # n data points of dimension d
-    K = 3
-    post = np.zeros((n,K)) # posterior probabilities to compute
-    LL = 0.0    # the LogLikelihood
-    mu = X[np.random.choice(n, K, replace=False)]
-    var = np.zeros(K)
+
+        """
+    n, _ = X.shape
+    K, _ = mixture.mu.shape
+    post = np.zeros((n, K))
+
+    ll = 0
     for i in range(n):
-        p = 0
-        s=0
         for j in range(K):
-            var = var.GaussianMixture[j]
-            mu = mu.GaussianMixture[j]
-            point = X[i] - mu
-            prob = GaussianMixture(p[j], var, point)
-            post[i][j] = prob
-            p += prob[0]
-            s += prob[0]
+            likelihood = gaussian(X[i], mixture.mu[j], mixture.var[j])
+            post[i, j] = mixture.p[j] * likelihood
+        total = post[i, :].sum()
+        post[i, :] = post[i, :] / total
+        ll += np.log(total)
 
-        for j in range(K):
-            post[i][j] *= (1/p)
+    return post, ll
 
-        LL += np.log(s)
-    return (post,LL)
+def gaussian(x: np.ndarray, mean: np.ndarray, var: float) -> float:
+    """Computes the probablity of vector x under a normal distribution
+
+    Args:
+        x: (d, ) array holding the vector's coordinates
+        mean: (d, ) mean of the gaussian
+        var: variance of the gaussian
+
+    Returns:
+        float: the probability
+    """
+    d = len(x)
+    log_prob = -d / 2.0 * np.log(2 * np.pi * var)
+    log_prob -= 0.5 * ((x - mean)**2).sum() / var
+    return np.exp(log_prob)
+
 
 def mstep(X: np.ndarray, post: np.ndarray) -> GaussianMixture:
     """M-step: Updates the gaussian mixture by maximizing the log-likelihood
