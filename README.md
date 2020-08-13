@@ -1,1 +1,1 @@
-# Machine-Learning-with-Python-From-Linear-Models-to-Deep-Learning
+# Machine-Learning-to-Deep-Learning
